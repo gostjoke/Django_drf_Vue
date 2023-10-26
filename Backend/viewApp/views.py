@@ -16,6 +16,9 @@ class AuthorSerializers(serializers.Serializer):
 
         return author_obj
 
+    def update(self, instance, validated_data):
+        Author.objects.filter(pk=instance.pk).update(**validated_data)
+        return instance
 
 class AuthorView(APIView):
 
@@ -35,3 +38,23 @@ class AuthorView(APIView):
             return Response("OK")
         else:
             return Response(serializer.errors)
+        
+class AuthorDetailView(APIView): #可用來捕獲主鍵
+    def get(self, request, id):
+        author = Author.objects.get(pk=id)
+        serializer = AuthorSerializers(instance=author,many=False)
+
+        return Response(serializer.data)
+
+    def put(self, request, id):
+        author = Author.objects.get(pk=id)
+        serializer = AuthorSerializers(instance=author,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response("OK")
+        else:
+            return Response(serializer.errors)
+        
+    def delete(self, request, id):
+        Author.objects.get(pk=id).delete()
+        return Response("delete ok")

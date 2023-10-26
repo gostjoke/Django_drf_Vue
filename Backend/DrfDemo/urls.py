@@ -14,11 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
-from viewApp.views import AuthorView
+from django.urls import path, include, re_path
+from viewApp.views import AuthorView, AuthorDetailView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('app01/', include("app01.urls")),
-    path('authors/',AuthorView.as_view()),
+    path('authors/', AuthorView.as_view()),
+    re_path("authors/(\d+)", AuthorDetailView.as_view()), # 可用來捕獲主鍵
 ]
