@@ -6,6 +6,7 @@ from viewApp.models import Author, Book, Publish
 from rest_framework.response import Response
 
 # Create your views here.
+# 原生不知道數據往哪張表添加
 class AuthorSerializers(serializers.Serializer):
     name = serializers.CharField(max_length=32)
     age = serializers.IntegerField()
@@ -57,4 +58,108 @@ class AuthorDetailView(APIView): #可用來捕獲主鍵
         
     def delete(self, request, id):
         Author.objects.get(pk=id).delete()
+        return Response("delete ok")
+    
+#################################################################################################
+
+# class PublishSerializers(serializers.ModelSerializer):
+
+#     ### the samething as serializer 
+#     class Meta:
+#         model = Publish
+#         fields = "__all__"
+
+# class PublishView(APIView):
+
+#     def get(self, request):
+#         publish_list = Publish.objects.all()
+#         # instance 是 get
+#         serializer = PublishSerializers(instance=publish_list, many=True) # many default False means one object
+
+#         return Response(serializer.data)
+
+#     def post(self, request):
+#         serializer = PublishSerializers(data = request.data)
+#         # 數據較正: 通過驗證serializer.validate_data, 未通過serializer.errors
+#         if serializer.is_valid(): # 所有的字段通過驗證
+#             # Publish_obj = Publish.objects.create(**serializer.validate_data)
+#             serializer.save()
+#             return Response("OK")
+#         else:
+#             return Response(serializer.errors)
+        
+# class PublishDetailView(APIView): #可用來捕獲主鍵
+#     def get(self, request, id):
+#         Publisher = Publish.objects.get(pk=id)
+#         serializer = PublishSerializers(instance=Publisher,many=False)
+
+#         return Response(serializer.data)
+
+#     def put(self, request, id):
+#         Publisher = Publish.objects.get(pk=id)
+#         serializer = PublishSerializers(instance=Publisher,data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response("OK")
+#         else:
+#             return Response(serializer.errors)
+        
+#     def delete(self, request, id):
+#         Publish.objects.get(pk=id).delete()
+#         return Response("delete ok")
+
+#### publish 新寫法
+from rest_framework.generics import GenericAPIView
+
+class PublishSerializers(serializers.ModelSerializer):
+
+    ### the samething as serializer 
+    class Meta:
+        model = Publish
+        fields = "__all__"
+
+class PublishView(GenericAPIView):
+
+    queryset = Publish.objects
+
+    serializer_class = PublishSerializers
+
+    def get(self, request):
+
+        serializer = self.get_serializer(instance=self.queryset, many=True)
+
+        return Response(serializer.data)
+
+    def post(self, request):
+        
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid(): # 所有的字段通過驗證
+            # Publish_obj = Publish.objects.create(**serializer.validate_data)
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+
+class PublishDetailView(GenericAPIView): #可用來捕獲主鍵
+
+    queryset = Publish.objects
+    serializer_class = PublishSerializers
+
+    def get(self, request, id):
+
+        serializer = self.get_serializer(instance=self.get_object(), many=False)
+
+        return Response(serializer.data)
+
+    def put(self, request, id):
+        Publisher = Publish.objects.get(pk=id)
+        serializer = PublishSerializers(instance=Publisher,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response("OK")
+        else:
+            return Response(serializer.errors)
+        
+    def delete(self, request, id):
+        Publish.objects.get(pk=id).delete()
         return Response("delete ok")

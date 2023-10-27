@@ -15,11 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
-from viewApp.views import AuthorView, AuthorDetailView
+from viewApp.views import *
+
+## path dont use Regular expression, 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('app01/', include("app01.urls")),
     path('authors/', AuthorView.as_view()),
     re_path("authors/(\d+)", AuthorDetailView.as_view()), # 可用來捕獲主鍵
+    path('publishes/', PublishView.as_view()),
+    # re_path("publish/(\d+)", PublishDetailView.as_view()),
+
 ]
