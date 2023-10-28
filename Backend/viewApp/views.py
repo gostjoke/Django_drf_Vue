@@ -110,6 +110,8 @@ class AuthorDetailView(APIView): #可用來捕獲主鍵
 
 #### publish 新寫法
 from rest_framework.generics import GenericAPIView
+## GenericAPIView 核心是做封裝
+from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
 
 class PublishSerializers(serializers.ModelSerializer):
 
@@ -117,49 +119,110 @@ class PublishSerializers(serializers.ModelSerializer):
     class Meta:
         model = Publish
         fields = "__all__"
-
-class PublishView(GenericAPIView):
+"""
+class PublishView(GenericAPIView, ListModelMixin, CreateModelMixin ):
 
     queryset = Publish.objects
-
     serializer_class = PublishSerializers
 
+    ############################################### 
+    # 原始寫法 GenericAPIView
+    # def get(self, request):
+    #     serializer = self.get_serializer(instance=self.queryset, many=True)
+    #     return Response(serializer.data)
+
+    # def post(self, request):   
+    #     serializer = self.get_serializer(data=request.data)
+    #     if serializer.is_valid(): # 所有的字段通過驗證
+    #         # Publish_obj = Publish.objects.create(**serializer.validate_data)
+    #         serializer.save()
+    #         return Response(serializer.data)
+    #     else:
+    #         return Response(serializer.errors)
+    ###############################################
+    
     def get(self, request):
-
-        serializer = self.get_serializer(instance=self.queryset, many=True)
-
-        return Response(serializer.data)
+        return self.list(request)
 
     def post(self, request):
-        
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid(): # 所有的字段通過驗證
-            # Publish_obj = Publish.objects.create(**serializer.validate_data)
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors)
+        return self.create(request)
 
-class PublishDetailView(GenericAPIView): #可用來捕獲主鍵
+
+class PublishDetailView(GenericAPIView, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin): #可用來捕獲主鍵
 
     queryset = Publish.objects
     serializer_class = PublishSerializers
 
-    def get(self, request, id):
+    ############################################### 
+    # 原始寫法 GenericAPIView
+    ## pk 寫法
+    # def get(self, request, pk):
 
-        serializer = self.get_serializer(instance=self.get_object(), many=False)
+    #     serializer = self.get_serializer(instance=self.get_object(), many=False)
 
-        return Response(serializer.data)
+    #     return Response(serializer.data)
 
-    def put(self, request, id):
-        Publisher = Publish.objects.get(pk=id)
-        serializer = PublishSerializers(instance=Publisher,data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response("OK")
-        else:
-            return Response(serializer.errors)
+    # def put(self, request, pk):
+
+    #     serializer = self.get_serializer(instance=self.get_object(),data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response("OK")
+    #     else:
+    #         return Response(serializer.errors)
         
-    def delete(self, request, id):
-        Publish.objects.get(pk=id).delete()
-        return Response("delete ok")
+    # def delete(self, request, id):
+    #     Publish.objects.get(pk=id).delete()
+    #     return Response("delete ok")
+    ############################################### 
+    def get(self, request, pk):
+        return self.retrieve(request, pk)
+
+    def put(self, request, pk):
+        return self.update(request, pk)
+    
+    def delete(self, request, pk):
+        return self.destroy(request,pk)
+"""
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+
+# class PublishView(ListCreateAPIView):
+
+#     queryset = Publish.objects
+#     serializer_class = PublishSerializers
+    
+
+# class PublishDetailView(RetrieveUpdateDestroyAPIView): 
+
+#     queryset = Publish.objects
+#     serializer_class = PublishSerializers
+
+from rest_framework.viewsets import ViewSetMixin
+
+# 是一套路由機制的改變
+# class PublishView(ViewSetMixin, APIView):
+
+#     def list(self, request):
+#         return Response("List...")
+    
+#     def create(self, request):
+#         return Response("create...")
+#     def single(self, request):
+#         return Response("single...")
+#     def edit(self, request):
+#         return Response("edit...")
+# class PublishView(ViewSetMixin, GenericAPIView, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, ListModelMixin, CreateModelMixin):
+
+#     queryset = Publish.objects
+#     serializer_class = PublishSerializers
+
+## the easiest way to write
+from rest_framework.viewsets import ModelViewSet
+
+class PublishView(ModelViewSet):
+    
+    queryset = Publish.objects
+    serializer_class = PublishSerializers
+
+
+

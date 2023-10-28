@@ -24,7 +24,14 @@ urlpatterns = [
     path('app01/', include("app01.urls")),
     path('authors/', AuthorView.as_view()),
     re_path("authors/(\d+)", AuthorDetailView.as_view()), # 可用來捕獲主鍵
-    path('publishes/', PublishView.as_view()),
-    # re_path("publish/(\d+)", PublishDetailView.as_view()),
 
+    ### publishes
+    # path('publishes/', PublishView.as_view()),
+    # # url: publishes/1  get(request, pk=1)
+    # re_path("publishes/(?P<pk>\d+)", PublishDetailView.as_view()),
+
+    ### only use one view
+    path('publishes/', PublishView.as_view({"get":"list","post":"create"})),
+    # # url: publishes/1  get(request, pk=1)
+    re_path("publishes/(?P<pk>\d+)", PublishView.as_view({"get":"retrieve", "put":"update", "delete":"destroy"})),
 ]
