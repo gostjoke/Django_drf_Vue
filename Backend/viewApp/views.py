@@ -119,6 +119,13 @@ class PublishSerializers(serializers.ModelSerializer):
     class Meta:
         model = Publish
         fields = "__all__"
+
+    # 反序列化器 較驗
+    def validate_name(self, value):
+        if value.endswith("publisher"):
+            return value
+        else:
+            raise serializers.ValidationError("must end with publisher")
 """
 class PublishView(GenericAPIView, ListModelMixin, CreateModelMixin ):
 
