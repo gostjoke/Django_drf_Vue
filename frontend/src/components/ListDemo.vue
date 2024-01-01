@@ -3,7 +3,7 @@
         ListDemo 列表渲染
     </h3>
     <div>
-    <p v-for="(item, index) in names" :key="index">{{ item }}</p>
+    <p v-for="(item, index) in names" :key="index">{{ index }}:{{ item }}</p>
     </div>
 </template>
 

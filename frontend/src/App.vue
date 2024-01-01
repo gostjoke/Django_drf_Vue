@@ -3,12 +3,20 @@
   <HelloWorld msg="Welcome to Your Vue.js App"/>
   <IfDemo />
   <ListDemo />
+  <EventDemo/>
+  <EventDemo2/>
+  <ComputesDemo/>
+  <ClassChange />
 </template>
 
 <script>
 import HelloWorld from './components/HelloWorld.vue';
 import IfDemo from './components/IfDemo.vue';
 import ListDemo from './components/ListDemo.vue';
+import EventDemo from './components/EventDemo.vue';
+import EventDemo2 from './components/EventDemo2.vue';
+import ComputesDemo from './components/ComputesDemo.vue';
+import ClassChange from './components/ClassChange.vue';
 
 export default {
   name: 'App',
@@ -16,7 +24,11 @@ export default {
     HelloWorld,
     IfDemo,
     ListDemo,
-  }
+    EventDemo,
+    EventDemo2,
+    ComputesDemo,
+    ClassChange,
+}
 }
 </script>
 
