@@ -1,12 +1,18 @@
 <template>
     <div class="main">
         <h3>Main</h3>
+        <AritcleItem/>
+        <AritcleItem/>
+        <AritcleItem/>
     </div>
 </template>
 
 <script>
+import AritcleItem from './AritcleItem.vue';
 export default{
-
+    components:{
+        AritcleItem
+    }
 }
 </script>
 

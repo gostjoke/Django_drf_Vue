@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->  
 <template>
   <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
   <MyHeader />
@@ -6,7 +7,7 @@
   <HelloWorld msg="Welcome to Your Vue.js App"/>
   <IfDemo />
   <ListDemo />
-  <EventDemo/>
+  <EventDemo/>  
   <EventDemo2/>
   <ComputesDemo/>
   <ClassChange />
@@ -15,7 +16,7 @@
 </template>
 
 <script>
-import MyHeader from './components/MyHeader/MyHeader.vue';
+// import MyHeader from './components/MyHeader/MyHeader.vue';
 import MyMain from './components/MyHeader/MyMain.vue';
 import MyAside from './components/MyHeader/MyAside.vue';
 import HelloWorld from './components/HelloWorld.vue';
@@ -31,7 +32,7 @@ import RelDemo from './components/RelDemo.vue';
 export default {
   name: 'App',
   components: {
-    MyHeader,
+    // MyHeader,
     MyMain,
     MyAside,
     HelloWorld,
